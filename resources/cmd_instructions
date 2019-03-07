@@ -1,0 +1,39 @@
+.s -> .o
+arm-none-eabi-gcc -x assembler-with-cpp -mcpu=cortex-m3 -mthumb -O0 -Wall -fdata-sections -ffunction-sections -c startup_stm32f103xb.s -o startup_stm32f103xb_nodebug.o
+
+arm-none-eabi-gcc -x assembler-with-cpp -mcpu=cortex-m3 -mthumb -O0 -Wall -fdata-sections -ffunction-sections -g -ggdb3 -c startup_stm32f103xb.s -o startup_stm32f103xb_debug.o 
+
+.c -> .o
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -O0 -Wall -fdata-sections -ffunction-sections -Wa,-a,-ad,-alms=system_stm32f1xx_nodebug.lst -c system_stm32f1xx.c -o system_stm32f1xx_nodebug.o
+
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -O0 -Wall -fdata-sections -ffunction-sections -Wa,-a,-ad,-alms=system_stm32f1xx_debug.lst -g -ggdb3 -c system_stm32f1xx.c -o system_stm32f1xx_debug.o
+
+.o -> .elf
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -specs=nano.specs -T STM32F103XB_FLASH.ld  -lc -lm -lnosys -Wl,-Map=empty_loop_nodebug.map,--cref -Wl,--gc-sections -o empty_loop_nodebug.elf *_nodebug.o
+
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -specs=nano.specs -T STM32F103XB_FLASH.ld  -lc -lm -lnosys -Wl,-Map=empty_loop_debug.map,--cref -Wl,--gc-sections -o empty_loop_debug.elf *_debug.o
+
+size
+arm-none-eabi-size empty_loop_nodebug.elf 
+   text	   data	    bss	    dec	    hex	filename
+    724	      8	   1564	   2296	    8f8	empty_loop_nodebug.elf
+
+objcopy
+arm-none-eabi-objcopy -O binary -S empty_loop_debug.elf empty_loop_debug.bin
+
+arm-none-eabi-objcopy -O ihex empty_loop_nodebug.elf empty_loop_nodebug.hex
+
+statc lib 
+arm-none-eabi-ar -rcs libSTM32F103_HSE72_nodebug.a startup_stm32f103xb_nodebug.o system_stm32f1xx_HSE72_nodebug.o
+
+openocd
+openocd
+telnet localhost 4444
+reset halt
+flash write_image erase #####.hex / flash write_image erase #####.bin 0x08000000
+reset run
+
+bp addr byte 	-> set breakpoint
+rbp addr 		-> remove breakpoint
+
+
