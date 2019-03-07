@@ -1,3 +1,7 @@
+# Vim swap and gdb_history
+*.swp
+.gdb_history
+
 # Prerequisites
 *.d
 
