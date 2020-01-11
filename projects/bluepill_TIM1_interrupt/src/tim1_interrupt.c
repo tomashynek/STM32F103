@@ -1,7 +1,6 @@
 #include<stdint.h>
 #include "stm32f103xb.h"
 
-void delay(uint32_t value);
 void delay_timer_1sec(void);
 
 int main(){
@@ -30,19 +29,14 @@ int main(){
 
     // Infinite loop
 	while(1){
-	//	delay(1000000U);
+        // TODO: Create interupt handling routine that will toggle LED and will clean TIM1 interupt
+        // TODO: Create setup function that will set TIM1 to 1sec mode - reuse code bellow
+        // TODO: Infinite loop will be empty, all setup before it 
         delay_timer_1sec();
 		GPIOC -> ODR ^= (1UL<<ledPin);
         GPIOB -> ODR ^= GPIO_ODR_ODR11;
 	}
 	return 0;
-}
-
-// Simple delay function
-void delay(uint32_t value){
-	while(value){
-		value --;
-    }
 }
 
 void delay_timer_1sec(void){

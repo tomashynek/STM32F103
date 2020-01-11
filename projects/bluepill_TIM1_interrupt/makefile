@@ -33,7 +33,7 @@ FUNC_flags = -fdata-sections -ffunction-sections
 
 
 # SUMMARY SETTINGS
-C2O_flags = -c $(CPU_flags) $(OPT_flags) $(DEBUG_flag) $(FUNC_flags) -I$(INCLUDE)
+C2O_flags = -c $(CPU_flags) $(OPT_flags) $(DEBUG_flag) $(FUNC_flags) -I$(INCLUDE) -specs=nano.specs
 LINK_flags = -specs=nano.specs -T $(INCLUDE)/STM32F103XB_FLASH.ld -L$(INCLUDE) -lc -lm -lnosys -l$(LIB_file)  -Wl,-Map=$(BUILD)/$(PROJECTNAME).map,--cref -Wl,--gc-sections
 
 # RULES
