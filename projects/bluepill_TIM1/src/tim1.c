@@ -1,7 +1,6 @@
 #include<stdint.h>
 #include "stm32f103xb.h"
 
-void delay(uint32_t value);
 void delay_timer_1sec(void);
 
 int main(){
@@ -17,7 +16,7 @@ int main(){
 
 	// Set PC13 mode as output with max 50MHz update rate
 	// write CNF1,CNF0,MODE1,MODE0 0011 to GPIOC -> CRH bits 23-20 (3UL<<20)
-	uint8_t ledPin = 13;
+	const uint8_t ledPin = 13;
 	GPIOC -> CRH |= (3U << GPIO_CRH_MODE13_Pos);
 	GPIOC -> CRH &=  ~GPIO_CRH_CNF13_Msk;
     
@@ -30,19 +29,11 @@ int main(){
 
     // Infinite loop
 	while(1){
-	//	delay(1000000U);
         delay_timer_1sec();
 		GPIOC -> ODR ^= (1UL<<ledPin);
         GPIOB -> ODR ^= GPIO_ODR_ODR11;
 	}
 	return 0;
-}
-
-// Simple delay function
-void delay(uint32_t value){
-	while(value){
-		value --;
-    }
 }
 
 void delay_timer_1sec(void){
