@@ -9,4 +9,13 @@ This repository will hopefully contain my hobbyist's trials to play with STM32F1
 
 However time is limited.
 
-## HW and connection
+## HW and connection [WIP]
+
+## Loading executable and debugging [WIP]
+Start openocd (reads openocd.cfg file) in one terminal
+In another terminal start gdb (there was arm-none-eabi-gdb previously but seems that current one is gdb-multiarch) gdb-multiarch xxx.elf
+In gdb do:
+* target remote localhost:3333 - connects to openocd server
+* monitor reset halt - reset and halt the target
+* load - upload corresponding .elf file
+* use common gdb commands - b, l, n, s, ... 
