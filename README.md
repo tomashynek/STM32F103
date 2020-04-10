@@ -9,13 +9,25 @@ This repository will hopefully contain my hobbyist's trials to play with STM32F1
 
 However time is limited.
 
+## Projects list:
+* blink - simple on-board led blining using while loop to countdown
+* TIM1 - blinking using TIM1 for countdown
+* TIM1_interrupt - blinking using interrup servise routine of TIM1 for countdown
+* ...
+
 ## HW and connection [WIP]
+* STM32F103 - bluepill from eBay
+* ST-LINKv2
+* RPi for compiling
 
 ## Loading executable and debugging [WIP]
-Start openocd (reads openocd.cfg file) in one terminal
+Start openocd (reads openocd.cfg file) in one terminal.
+
 In another terminal start gdb (there was arm-none-eabi-gdb previously but seems that current one is gdb-multiarch) gdb-multiarch xxx.elf
+
 In gdb do:
 * target remote localhost:3333 - connects to openocd server
 * monitor reset halt - reset and halt the target
 * load - upload corresponding .elf file
-* use common gdb commands - b, l, n, s, ... 
+* use common gdb commands - b, l, n, s, ...
+
