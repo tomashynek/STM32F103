@@ -1,7 +1,9 @@
 #include<stdint.h>
 #include "stm32f103xb.h"
 
-void delay_timer_1sec(void);
+void setup_tim1_1sec(void);
+
+const uint8_t ledPin = 13;
 
 int main(){
 	SystemCoreClockUpdate();
@@ -16,39 +18,38 @@ int main(){
 
 	// Set PC13 mode as output with max 50MHz update rate
 	// write CNF1,CNF0,MODE1,MODE0 0011 to GPIOC -> CRH bits 23-20 (3UL<<20)
-	uint8_t ledPin = 13;
 	GPIOC -> CRH |= (3U << GPIO_CRH_MODE13_Pos);
 	GPIOC -> CRH &=  ~GPIO_CRH_CNF13_Msk;
     
-	// Set PB11 mode as output with max 50MHz update rate
-	// write CNF1,CNF0,MODE1,MODE0 0011 to GPIOB -> CRH bits 15-12 (3UL<<12)
-    // write 0 to output
-	GPIOB -> CRH |= (3U << GPIO_CRH_MODE11_Pos);
-	GPIOB -> CRH &= ~GPIO_CRH_CNF11_Msk;
-	GPIOB -> ODR &= ~GPIO_ODR_ODR11;
+    // Setup TIM1 for 1sec 
+    setup_tim1_1sec();
+    // Enable Update interupt
+    TIM1 -> DIER |= TIM_DIER_UIE;
+    // Enable TIM1_UP interrupt in NVIC
+    NVIC_EnableIRQ(TIM1_UP_IRQn);
+    // Start TIM1
+    TIM1 -> CR1 |= TIM_CR1_CEN;
 
     // Infinite loop
 	while(1){
-        // TODO: Create interupt handling routine that will toggle LED and will clean TIM1 interupt
-        // TODO: Create setup function that will set TIM1 to 1sec mode - reuse code bellow
-        // TODO: Infinite loop will be empty, all setup before it 
-        delay_timer_1sec();
-		GPIOC -> ODR ^= (1UL<<ledPin);
-        GPIOB -> ODR ^= GPIO_ODR_ODR11;
+        //Do nothing, all is handled by interrupt service routine
 	}
 	return 0;
 }
 
-void delay_timer_1sec(void){
+void setup_tim1_1sec(void){
     // With 72MHz clock 1 second delay can be achieved by:
-    // prescaler PSC = 0xFFF => 4096
-    // auto-relode ARR = 72e6/4096 = 17578 = 0x44AA
-    TIM1 -> PSC = 0x0FFFU;
-    TIM1 -> ARR = 0x44AAU;
+    // prescaler PSC  => 7200
+    // auto-relode ARR = 72e6/7200 = 10000
+    TIM1 -> PSC = 7200;
+    TIM1 -> ARR = 10000;
     TIM1 -> CR1 |= TIM_CR1_ARPE;
-    TIM1 -> CR1 |= TIM_CR1_CEN;
-    // wait until counting - check UIF in TIM1->SR, then switch off TIM, clean UIF and return
-    while((TIM1 -> SR & TIM_SR_UIF_Msk) == 0){}
-    TIM1 -> CR1 &= ~TIM_CR1_CEN_Msk;
-    TIM1 -> SR &= ~TIM_SR_UIF_Msk;
+}
+
+void TIM1_UP_IRQHandler(void){
+    // TIM1 update event interrupt
+	// Toggle LED
+    GPIOC -> ODR ^= (1UL << ledPin);
+    // Clear interrupt
+    TIM1 -> SR &= ~TIM_SR_UIF;
 }
