@@ -5,14 +5,14 @@ Language - bare metal C - not yet asm, C++ nor RTOS - but I hope they will come 
 
 I would really like to learn STM32 programming. Hard way seems the most appealing to me, there are no hidden secrets, you have to understand device and toolchain.
 
-This repository will hopefully contain my hobbyist's trials to play with STM32F103 - bluepill from eBay. I will start with simple peripherials like timers, USART, I2C etc.
+This repository will hopefully contain my hobbyist's trials to play with STM32F103 - bluepill from eBay. I will start with simple peripherals like timers, USART, I2C etc.
 
 However time is limited.
 
 ## Projects list:
-* blink - simple on-board led blining using while loop to countdown
+* blink - simple on-board led blinking using while loop to countdown
 * TIM1 - blinking using TIM1 for countdown
-* TIM1_interrupt - blinking using interrup servise routine of TIM1 for countdown
+* TIM1_interrupt - blinking using interrupt service routine of TIM1 for countdown
 * ...
 
 ## HW and connection [WIP]
