@@ -2,14 +2,12 @@
 
 int main(){
 	SystemCoreClockUpdate();
-    // TODO: setup serial for transmission
-    // TODO: in while loop repeat over and over
 
     const char msg[] = "Hello World!\n";     
-    
+    int length = sizeof(msg)/sizeof(msg[0]);
+
     // Enable clock to PortA (TX and RX pins of USART1)
     RCC -> APB2ENR |= RCC_APB2ENR_IOPAEN;
-    // TBC: may be necessary to enable clock to AFIO (TX1 must be set to AF configuration, but I do not need remapping)
     // Enable clock to USART1
     RCC -> APB2ENR |= RCC_APB2ENR_USART1EN;
 
@@ -32,8 +30,13 @@ int main(){
 
     // Infinite loop
 	while(1){
-        while((USART1 -> SR & USART_SR_TC_Msk) == 0) {}
-        USART1 -> DR = msg[0];
+        // loop over message
+        for(int i = 0; i < length; i++){
+            // wait until finished
+            while((USART1 -> SR & USART_SR_TC_Msk) == 0) {}
+            // send character
+            USART1 -> DR = msg[i];
+        }
 	}
 	return 0;
 }

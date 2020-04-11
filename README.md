@@ -13,12 +13,21 @@ However time is limited.
 * blink - simple on-board led blinking using while loop to countdown
 * TIM1 - blinking using TIM1 for countdown
 * TIM1_interrupt - blinking using interrupt service routine of TIM1 for countdown
+* serial_helloworld - continuous transmission of "Hello world!" text over USART1
 * ...
 
 ## HW and connection [WIP]
 * STM32F103 - bluepill from eBay
 * ST-LINKv2
+* PL2303 - USB-to-Serial convertor
 * RPi for compiling
+
+## Toolchain and SW
+* arm-none-eabi
+* gdb-multiarch
+* openocd
+* vim
+* putty
 
 ## Loading executable and debugging [WIP]
 Start openocd (reads openocd.cfg file) in one terminal.
