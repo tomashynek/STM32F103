@@ -32,7 +32,8 @@ int main(){
 
     // Infinite loop
 	while(1){
-
+        while((USART1 -> SR & USART_SR_TC_Msk) == 0) {}
+        USART1 -> DR = msg[0];
 	}
 	return 0;
 }
