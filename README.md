@@ -14,6 +14,7 @@ However time is limited.
 * TIM1 - blinking using TIM1 for countdown
 * TIM1_interrupt - blinking using interrupt service routine of TIM1 for countdown
 * serial_helloworld - continuous transmission of "Hello world!" text over USART1
+* serial_toggle_led - toggle led state by sending 't' character over USART1 
 * ...
 
 ## HW and connection [WIP]
