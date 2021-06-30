@@ -28,13 +28,27 @@ int main(){
     //USART1 -> CR1 |= USART_CR1_TE;
 
     // Initialise ADC1 for conversion of internal channels (reference voltage or temperature sensor)
-    // Calibration!!!
+    ADC1 -> CR2 |= ADC_CR2_ADON; // Turn ADC1 ON
+    ADC1 -> CR2 |= ADC_CR2_TSVREFE; // Enable internal channels
+    ADC1 -> CR2 &= ~ADC_CR2_ALIGN; // Right alignment of the results
+    ADC1 -> CR2 &= ~ADC_CR2_CONT; // Single mode
+    ADC1 -> SQR3 = (ADC1 -> SQR3 & ~ADC_SQR3_SQ1_Msk) | (17U << ADC_SQR3_SQ1_Pos); // Channel 17 (V_REF) as 1st input in sequence
+    ADC1 -> SQR1 = (ADC1 -> SQR1 & ~ADC_SQR1_L_Msk) | (0U << ADC_SQR1_L_Pos); // Set number of channels in sequence to 1 (=0000)
+    ADC1 -> SMPR1 = (ADC1 -> SMPR1 & ~ADC_SMPR1_SMP17_Msk) | (7U << ADC_SMPR1_SMP17_Pos); // Set sampling time of channel 17 to 239.5 cycle (~ 21us @ 12MHz)
+    // Calibration
+    ADC1 -> CR2 |= ADC_CR2_CAL; // Start calibration
+    while((ADC1 -> CR2 & ADC_CR2_CAL_Msk) != 0){} // Wait until CAL is cleared by HW
+
 
     // Infinite loop
+    int result = 0;
 	while(1){
         // Trigger measurement and wait for the results
+        ADC1 -> CR2 |= ADC_CR2_ADON; // Trigger measurement
+        while((ADC1 -> SR & ADC_SR_EOS_Msk) == 0){} // Wait till the end of conversion
+        result = ADC1 -> DR; // Store result from DR
+
         // Send result over USART1
-        
         // loop over message
 //        for(int i = 0; i < length; i++){
             // wait until finished
