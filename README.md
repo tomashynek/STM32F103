@@ -16,6 +16,7 @@ However time is limited.
 * serial_helloworld - continuous transmission of "Hello world!" text over USART1
 * serial_toggle_led - toggle led state by sending 't' character over USART1 
 * adc_internal - read internal (temperature or reference voltage) value by ADC1 and send results over USART1
+* adc_external - read external pin value by ADC1 and send results over USART1
 * ...
 
 ## HW and connection [WIP]
