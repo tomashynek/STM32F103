@@ -6,26 +6,26 @@ int main(){
     // Enable clock to PortA (TX and RX pins of USART1)
     RCC -> APB2ENR |= RCC_APB2ENR_IOPAEN;
     // Enable clock to USART1
-    //RCC -> APB2ENR |= RCC_APB2ENR_USART1EN;
+    RCC -> APB2ENR |= RCC_APB2ENR_USART1EN;
     // Enable clock to ADC1
     RCC -> APB2ENR |= RCC_APB2ENR_ADC1EN;
 
     // Set pin PA9 (TX1) to AF Push-pull (see Reference manual page 166)
     // CNF1 CNF0 Mode1 Mode0  = 1011 = 0xB at pin9
     // Read -> Clear CNF and MODE for Pin9 -> Set 0xB -> Write
-    //GPIOA -> CRH = ((GPIOA -> CRH & ~(GPIO_CRH_CNF9_Msk | GPIO_CRH_MODE9_Msk)) | (0xB << GPIO_CRH_MODE9_Pos));
+    GPIOA -> CRH = ((GPIOA -> CRH & ~(GPIO_CRH_CNF9_Msk | GPIO_CRH_MODE9_Msk)) | (0xB << GPIO_CRH_MODE9_Pos));
     
     // Initialise USART1 for transmission
     // Enable USART1
-    //USART1 -> CR1 |= USART_CR1_UE; 
+    USART1 -> CR1 |= USART_CR1_UE; 
     // Set M to 0 - 1 start 8 data n stop bits
-    //USART1 -> CR1 & ~USART_CR1_M;
+    USART1 -> CR1 & ~USART_CR1_M;
     // Set Stop to 00 - 1 stop bit
-    //USART1 -> CR2 & ~USART_CR2_STOP;
+    USART1 -> CR2 & ~USART_CR2_STOP;
     // Set Baud rate to 9600 - 72e6 / (16*468.75) -> Mantissa 468, Fraction 0.75 -> 0xC
-    //USART1 -> BRR = ((468 << USART_BRR_DIV_Mantissa_Pos) | 0xC);
+    USART1 -> BRR = ((468 << USART_BRR_DIV_Mantissa_Pos) | 0xC);
     // Set TE to 1
-    //USART1 -> CR1 |= USART_CR1_TE;
+    USART1 -> CR1 |= USART_CR1_TE;
 
     // Initialise ADC1 for conversion of internal channels (reference voltage or temperature sensor)
     ADC1 -> CR2 |= ADC_CR2_ADON; // Turn ADC1 ON
@@ -39,9 +39,12 @@ int main(){
     ADC1 -> CR2 |= ADC_CR2_CAL; // Start calibration
     while((ADC1 -> CR2 & ADC_CR2_CAL_Msk) != 0){} // Wait until CAL is cleared by HW
 
+    int result = 0;
+    const char len = 3; // message will be two bytes + newline
+    char msg[len];
+    msg[len-1] = '\n';
 
     // Infinite loop
-    int result = 0;
 	while(1){
         // Trigger measurement and wait for the results
         ADC1 -> CR2 |= ADC_CR2_ADON; // Trigger measurement
@@ -49,13 +52,15 @@ int main(){
         result = ADC1 -> DR; // Store result from DR
 
         // Send result over USART1
-        // loop over message
-//        for(int i = 0; i < length; i++){
+        // Sending order upper byte, lower byte, newline char
+        msg[0] = (result & 0xFF00) >> 8U; // Mask and shift upper byte
+        msg[1] = result & 0xFF; // Mask lower byte
+        for(int i = 0; i < len; i++){
             // wait until finished
-//            while((USART1 -> SR & USART_SR_TC_Msk) == 0) {}
+            while((USART1 -> SR & USART_SR_TC_Msk) == 0) {}
             // send character
-//            USART1 -> DR = msg[i];
-//        }
+            USART1 -> DR = msg[i];
+        }
 	}
 	return 0;
 }
