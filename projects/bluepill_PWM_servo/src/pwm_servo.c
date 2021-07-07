@@ -10,11 +10,15 @@ int main(){
 
     // Setup TIM2 - into PWM mode, period 20ms, TODO: extreme servo values shall be 1-2ms thus duty cycle 5-10%  
     // TIM2 will be free running no need to care about interrupts or overflows, just CCR shall be updated
-    // With 72MHz clock 1 second delay can be achieved by:
-    // prescaler PSC = 0xFFF => 4096
-    // auto-reload ARR = 72e6/4096 = 17578 = 0x44AA
-    // TIM2 -> PSC = 0x0FFFU;
-    // TIM2 -> ARR = 0x44AAU;
+    // With 36MHz clock:
+    // Servo angle range is approx 180deg, max - min pwm range is about 1ms, thus would be nice to have 180 ticks per 1 ms
+    // This thus gives 180kHz counter input frequency
+    // Prescaler set to 199 makes 36MHz/(199+1) = 180kHz
+    // Auto reload set to 3600 ticks means 20 ms
+    // Min position ~ 1ms = 180 ticks
+    // Max position ~ 2ms = 360 ticks
+    TIM2 -> PSC = 199;
+    TIM2 -> ARR = 3599;
     // TIM2 -> CR1 |= TIM_CR1_ARPE;
     // TIM2 -> CR1 |= TIM_CR1_CEN;
     
