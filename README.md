@@ -17,6 +17,7 @@ However time is limited.
 * serial_toggle_led - toggle led state by sending 't' character over USART1 
 * adc_internal - read internal (temperature or reference voltage) value by ADC1 and send results over USART1
 * adc_external - read external pin value by ADC1 and send results over USART1
+* PWM_servo - use PWM from TIM2 to control servo, accept 'l' or 'r' characters via USART1 to change the position 
 * ...
 
 ## HW and connection [WIP]
@@ -31,6 +32,7 @@ However time is limited.
 * openocd
 * vim
 * putty
+* python
 
 ## Loading executable and debugging [WIP]
 Start openocd (reads openocd.cfg file) in one terminal.
